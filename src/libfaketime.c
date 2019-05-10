@@ -78,6 +78,8 @@ extern char *__progname;
 #define CLOCK_THREAD_CPUTIME_ID      3
 /* Monotonic system-wide clock, not adjusted for frequency scaling.  */
 #define CLOCK_MONOTONIC_RAW          4
+#define CLOCK_REALTIME_COARSE	     5
+#define CLOCK_MONOTONIC_COARSE	     6
 typedef int clockid_t;
 #include <mach/clock.h>
 #include <mach/mach.h>
@@ -1703,6 +1705,12 @@ int fake_clock_gettime(clockid_t clk_id, struct timespec *tp)
       case CLOCK_MONOTONIC_RAW:
         timespecsub(tp, &ftpl_starttime.mon_raw, &tmp_ts);
         break;
+      case CLOCK_REALTIME_COARSE:
+	timespecsub(tp, &ftpl_starttime.real, &tmp_ts);
+	break;
+      case CLOCK_MONOTONIC_COARSE:
+	timespecsub(tp, &ftpl_starttime.mon, &tmp_ts);
+	break;
       default:
         printf("Invalid clock_id for clock_gettime: %d", clk_id);
         exit(EXIT_FAILURE);
@@ -1837,6 +1845,12 @@ int fake_clock_gettime(clockid_t clk_id, struct timespec *tp)
             break;
           case CLOCK_MONOTONIC_RAW:
             timespecsub(tp, &ftpl_starttime.mon_raw, &tdiff);
+            break;
+          case CLOCK_REALTIME_COARSE:
+            timespecsub(tp, &ftpl_starttime.real, &tdiff);
+            break;
+          case CLOCK_MONOTONIC_COARSE:
+            timespecsub(tp, &ftpl_starttime.mon, &tdiff);
             break;
           default:
             printf("Invalid clock_id for clock_gettime: %d", clk_id);
